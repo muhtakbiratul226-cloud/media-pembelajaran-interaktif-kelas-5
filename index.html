@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Mengenal Teks Narasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .view-hidden { display: none !important; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-radius: 1rem; }
+        body { background-color: #e0f2fe; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="text-lg md:text-xl font-bold font-mono">Bina Bahasa V</h1>
+            <div id="user-info" class="hidden flex items-center gap-3">
+                <span id="student-name-display" class="font-semibold bg-blue-700 px-3 py-1 rounded-full text-sm"></span>
+                <button id="btn-home" onclick="navTo('view-student-menu')" class="bg-sky-400 hover:bg-sky-300 text-blue-900 px-3 py-1 rounded shadow text-sm font-bold transition">Menu</button>
+                <button id="btn-logout" onclick="logout()" class="bg-red-500 hover:bg-red-400 px-3 py-1 rounded shadow text-sm font-bold transition">Keluar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 md:p-8 flex justify-center items-start">
+        <div class="w-full max-w-4xl relative">
+            
+            <div id="view-home" class="glass-card p-8 text-center animate-fade-in">
+                <div class="text-6xl mb-4">📚🎧</div>
+                <h2 class="text-3xl font-extrabold text-blue-800 mb-2">Petualangan Mengenal Teks Narasi</h2>
+                <p class="text-slate-600 mb-8 font-medium">Fiksi vs Nonfiksi - Media Interaktif Kelas V SD</p>
+                
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <button onclick="navTo('view-login-student')" class="bg-green-500 hover:bg-green-400 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition">
+                        Masuk Siswa
+                    </button>
+                    <button onclick="navTo('view-login-teacher')" class="bg-slate-700 hover:bg-slate-600 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition">
+                        Masuk Guru
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-login-student" class="view-hidden glass-card p-8 text-center max-w-md mx-auto">
+                <h3 class="text-2xl font-bold text-green-700 mb-4">Halo, Jagoan!</h3>
+                <p class="mb-4 text-sm text-slate-600">Siapa namamu? Ketik di bawah ini ya!</p>
+                <input type="text" id="input-student-name" placeholder="Namamu..." class="w-full p-3 border-2 border-green-300 rounded-xl mb-4 text-center text-lg focus:outline-none focus:border-green-500">
+                <div class="flex gap-2 justify-center">
+                    <button onclick="navTo('view-home')" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-xl font-bold">Kembali</button>
+                    <button onclick="loginStudent()" class="bg-green-500 hover:bg-green-400 text-white py-2 px-6 rounded-xl font-bold">Mulai Belajar 🚀</button>
+                </div>
+            </div>
+
+            <div id="view-login-teacher" class="view-hidden glass-card p-8 text-center max-w-md mx-auto">
+                <h3 class="text-2xl font-bold text-slate-700 mb-4">Dashboard Guru</h3>
+                <p class="mb-4 text-sm text-slate-600">Masukkan PIN Keamanan</p>
+                <input type="password" id="input-teacher-pin" placeholder="****" class="w-full p-3 border-2 border-slate-300 rounded-xl mb-4 text-center text-lg focus:outline-none focus:border-slate-500">
+                <div class="flex gap-2 justify-center">
+                    <button onclick="navTo('view-home')" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-xl font-bold">Kembali</button>
+                    <button onclick="loginTeacher()" class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-6 rounded-xl font-bold">Masuk</button>
+                </div>
+            </div>
+
+            <div id="view-student-menu" class="view-hidden glass-card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-blue-800 mb-6 border-b pb-2">Menu Petualangan</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button onclick="navTo('view-materi'); saveProgress('materi');" class="bg-yellow-100 border-2 border-yellow-400 hover:bg-yellow-200 p-6 rounded-2xl flex flex-col items-center gap-3 transition">
+                        <span class="text-4xl">📖</span>
+                        <span class="font-bold text-yellow-800">Ruang Materi</span>
+                    </button>
+                    <button onclick="navTo('view-audio'); saveProgress('audio');" class="bg-pink-100 border-2 border-pink-400 hover:bg-pink-200 p-6 rounded-2xl flex flex-col items-center gap-3 transition">
+                        <span class="text-4xl">🎧</span>
+                        <span class="font-bold text-pink-800">Lab Mendengarkan</span>
+                    </button>
+                    <button onclick="startQuiz(); saveProgress('quiz');" class="bg-purple-100 border-2 border-purple-400 hover:bg-purple-200 p-6 rounded-2xl flex flex-col items-center gap-3 transition">
+                        <span class="text-4xl">📝</span>
+                        <span class="font-bold text-purple-800">Kuis Evaluasi</span>
+                    </button>
+                    <button onclick="navTo('view-reflection');" class="bg-teal-100 border-2 border-teal-400 hover:bg-teal-200 p-6 rounded-2xl flex flex-col items-center gap-3 transition">
+                        <span class="text-4xl">💭</span>
+                        <span class="font-bold text-teal-800">Refleksi Hati</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-materi" class="view-hidden glass-card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">Pengertian Teks Narasi</h2>
+                <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border-l-4 border-blue-500">
+                    <p class="mb-2"><strong>Teks Narasi</strong> adalah teks yang menceritakan urutan peristiwa atau kejadian secara berurutan. Di dalam teks narasi biasanya ada <strong>Tokoh</strong>, <strong>Latar (Tempat/Waktu)</strong>, dan <strong>Pesan</strong>.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-orange-50 p-4 rounded-xl border border-orange-200">
+                        <h3 class="font-bold text-orange-700 mb-2">🐉 Narasi Fiksi</h3>
+                        <p class="text-sm">Cerita yang bersifat khayalan, imajinasi, atau rekaan. Tidak benar-benar terjadi di dunia nyata.</p>
+                        <p class="text-xs text-slate-500 mt-2">Contoh: Dongeng, Fabel, Cerita Fantasi.</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-200">
+                        <h3 class="font-bold text-green-700 mb-2">📸 Narasi Nonfiksi</h3>
+                        <p class="text-sm">Cerita yang berisi kejadian nyata, berdasarkan fakta, atau pengalaman seseorang yang benar-benar terjadi.</p>
+                        <p class="text-xs text-slate-500 mt-2">Contoh: Biografi, Sejarah, Pengalaman Nyata.</p>
+                    </div>
+                </div>
+                
+                <button onclick="navTo('view-student-menu')" class="bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600">Kembali ke Menu</button>
+            </div>
+
+            <div id="view-audio" class="view-hidden glass-card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">Lab Mendengarkan (Teks Aural)</h2>
+                <p class="mb-4 text-sm">Pilih cerita, lalu klik putar untuk mendengarkan. Tebak apakah cerita ini Fiksi atau Nonfiksi!</p>
+                
+                <div class="flex flex-col gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-lg">Kancil dan Lentera Ajaib</h4>
+                            <p class="text-xs text-slate-500">Durasi Singkat</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="playTTS('Kancil yang cerdik menemukan sebuah lentera tua di tengah hutan. Saat digosok, keluarlah asap ungu yang ajaib.')" class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-lg font-bold text-sm">▶️ Putar</button>
+                            <button onclick="guessAudio('fiksi')" class="bg-orange-400 hover:bg-orange-300 text-white px-3 py-2 rounded-lg font-bold text-sm">Ini Fiksi</button>
+                            <button onclick="guessAudio('nonfiksi')" class="bg-green-500 hover:bg-green-400 text-white px-3 py-2 rounded-lg font-bold text-sm">Ini Nonfiksi</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-lg">Perjalanan Rani ke Perpustakaan</h4>
+                            <p class="text-xs text-slate-500">Durasi Singkat</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="playTTS('Hari Minggu pagi, Rani pergi ke perpustakaan desa. Ia meminjam buku sejarah dan membacanya di teras.')" class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-lg font-bold text-sm">▶️ Putar</button>
+                            <button onclick="guessAudio('fiksi')" class="bg-orange-400 hover:bg-orange-300 text-white px-3 py-2 rounded-lg font-bold text-sm">Ini Fiksi</button>
+                            <button onclick="guessAudio('nonfiksi')" class="bg-green-500 hover:bg-green-400 text-white px-3 py-2 rounded-lg font-bold text-sm">Ini Nonfiksi</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button onclick="stopTTS()" class="text-red-500 underline text-sm font-bold">Hentikan Suara</button>
+                    <button onclick="navTo('view-student-menu')" class="bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600">Kembali ke Menu</button>
+                </div>
+            </div>
+
+            <div id="view-quiz" class="view-hidden glass-card p-6 md:p-8 text-center">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">Kuis Evaluasi</h2>
+                
+                <div id="quiz-container" class="bg-white p-6 rounded-xl border border-slate-200 mb-6 text-left">
+                    <h3 id="quiz-question" class="text-lg font-semibold mb-4">Pertanyaan akan muncul di sini...</h3>
+                    <div id="quiz-options" class="flex flex-col gap-3">
+                        <!-- Options generated by JS -->
+                    </div>
+                </div>
+
+                <div id="quiz-result" class="hidden bg-green-100 p-6 rounded-xl border border-green-300 mb-6">
+                    <h3 class="text-2xl font-bold text-green-800 mb-2">Kuis Selesai!</h3>
+                    <p class="text-lg">Skor Kamu: <span id="quiz-score-display" class="font-bold text-3xl text-blue-600">0</span> / 100</p>
+                </div>
+                
+                <button onclick="navTo('view-student-menu')" class="bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600">Kembali ke Menu</button>
+            </div>
+
+            <div id="view-reflection" class="view-hidden glass-card p-6 md:p-8 text-center">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">Refleksi Hati 💭</h2>
+                <p class="mb-6">Bagaimana perasaanmu belajar hari ini?</p>
+                
+                <div class="flex justify-center gap-6 mb-6">
+                    <button onclick="submitReflection('Senang Sekali')" class="text-5xl hover:scale-110 transition">😄</button>
+                    <button onclick="submitReflection('Biasa Saja')" class="text-5xl hover:scale-110 transition">🙂</button>
+                    <button onclick="submitReflection('Sulit/Bingung')" class="text-5xl hover:scale-110 transition">😕</button>
+                </div>
+
+                <p id="reflection-thanks" class="hidden text-green-600 font-bold mb-4">Terima kasih sudah mengisi! Laporanmu tersimpan.</p>
+                <button onclick="navTo('view-student-menu')" class="bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600">Kembali ke Menu</button>
+            </div>
+
+            <div id="view-teacher-dashboard" class="view-hidden glass-card p-6 md:p-8 w-full max-w-full">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <h2 class="text-2xl font-bold text-slate-800">Dashboard Guru (Real-time)</h2>
+                    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 font-bold">Keluar</button>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded border text-center shadow-sm">
+                        <p class="text-sm text-slate-500">Total Siswa</p>
+                        <p id="dash-total-students" class="text-2xl font-bold text-blue-600">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded border text-center shadow-sm">
+                        <p class="text-sm text-slate-500">Rata-rata Kuis</p>
+                        <p id="dash-avg-score" class="text-2xl font-bold text-green-600">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded border text-center shadow-sm">
+                        <p class="text-sm text-slate-500">Mulai Kuis</p>
+                        <p id="dash-quiz-done" class="text-2xl font-bold text-purple-600">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded border text-center shadow-sm">
+                        <p class="text-sm text-slate-500">Audio Didengar</p>
+                        <p id="dash-audio-done" class="text-2xl font-bold text-pink-600">0</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="exportToCSV()" class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 text-sm font-bold">⬇️ Unduh CSV</button>
+                    <button onclick="window.print()" class="bg-slate-600 text-white px-4 py-2 rounded shadow hover:bg-slate-700 text-sm font-bold">🖨️ Cetak</button>
+                    <button onclick="resetData()" class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 text-sm font-bold ml-auto">⚠️ Reset Data</button>
+                </div>
+
+                <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-sm">
+                                <th class="p-3 border-b-2 border-slate-300">Nama Siswa</th>
+                                <th class="p-3 border-b-2 border-slate-300">Progress</th>
+                                <th class="p-3 border-b-2 border-slate-300">Skor Audio</th>
+                                <th class="p-3 border-b-2 border-slate-300">Skor Kuis</th>
+                                <th class="p-3 border-b-2 border-slate-300">Refleksi</th>
+                                <th class="p-3 border-b-2 border-slate-300">Status Aktif</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body" class="text-sm">
+                            <!-- Rows generated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="custom-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 animate-fade-in text-center">
+            <h3 class="text-xl font-bold text-slate-800 mb-4">Pesan</h3>
+            <p id="custom-modal-text" class="text-slate-600 mb-6 text-sm">Pesan muncul di sini</p>
+            <div class="flex justify-center gap-3">
+                <button id="modal-btn-cancel" onclick="closeModal(false)" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl font-bold transition">Batal</button>
+                <button onclick="closeModal(true)" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-xl font-bold transition">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let firebaseConfig = {};
+        try { firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {}; } catch(e){}
+        
+        let app, auth, db;
+        try {
+            // Hanya jalankan Cloud Database jika ada konfigurasinya
+            if (Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            } else {
+                console.warn("Berjalan dalam mode Offline (Penyimpanan Lokal) di GitHub.");
+            }
+        } catch(error) {
+            console.error("Gagal inisialisasi database:", error);
+        }
+
+        async function initAuth() {
+            if (!auth) return; // Hentikan jika tidak ada Cloud
+            try {
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) { console.error("Firebase auth error", e); }
+        }
+        initAuth();
+
+        window.cloudDb = db;
+        window.cloudAuth = auth;
+        window.cloudAppId = appId;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.deleteDoc = deleteDoc;
+        window.onSnapshot = onSnapshot;
+        window.collection = collection;
+    </script>
+
+    <script>
+        let modalCallback = null;
+        
+        function showModal(message, type = "alert", callback = null) {
+            const modalText = document.getElementById("custom-modal-text");
+            if (modalText) modalText.innerText = message;
+            
+            const modal = document.getElementById("custom-modal");
+            const btnCancel = document.getElementById("modal-btn-cancel");
+            modalCallback = callback;
+            
+            if (modal) {
+                if (type === "confirm") {
+                    if (btnCancel) btnCancel.classList.remove("hidden");
+                } else {
+                    if (btnCancel) btnCancel.classList.add("hidden");
+                }
+                modal.classList.remove("hidden");
+            } else {
+                if (type === "confirm") {
+                    const res = confirm(message);
+                    if (callback) callback(res);
+                } else {
+                    alert(message);
+                    if (callback) callback(true);
+                }
+            }
+        }
+        
+        function closeModal(result) {
+            const modal = document.getElementById("custom-modal");
+            if (modal) modal.classList.add("hidden");
+            if (modalCallback) {
+                modalCallback(result);
+                modalCallback = null;
+            }
+        }
+
+        let appData = { students: {} };
+        const APP_KEY = 'media_pembelajaran_kelas5';
+        let currentStudent = null;
+        let unsubscribeDashboard = null;
+
+        window.onload = function() {
+            loadData();
+            if (currentStudent) {
+                navTo('view-student-menu');
+            }
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (currentStudent && appData.students[currentStudent] && appData.students[currentStudent].status === 'Sedang Belajar') {
+                appData.students[currentStudent].status = 'Keluar (Tutup Browser)';
+                saveDataLocally();
+            }
+        });
+
+        function loadData() {
+            const savedData = localStorage.getItem(APP_KEY);
+            if (savedData) {
+                try {
+                    appData = JSON.parse(savedData);
+                } catch (e) {
+                    console.error("Gagal membaca data lokal", e);
+                }
+            }
+        }
+
+        function saveDataLocally() {
+            localStorage.setItem(APP_KEY, JSON.stringify(appData));
+            if (currentStudent && window.cloudAuth && window.cloudAuth.currentUser) {
+                const docRef = window.doc(window.cloudDb, 'artifacts', window.cloudAppId, 'public', 'data', 'students', currentStudent);
+                window.setDoc(docRef, appData.students[currentStudent], { merge: true }).catch(e => console.error("Gagal Sync Cloud", e));
+            }
+        }
+
+        function navTo(viewId) {
+            document.querySelectorAll('main > div > div[id^="view-"]').forEach(div => {
+                if (div.classList) div.classList.add('view-hidden');
+            });
+            
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.remove('view-hidden');
+            window.scrollTo(0,0);
+
+            if (viewId === 'view-home' || viewId.includes('login')) {
+                document.getElementById('user-info').classList.add('hidden');
+                if (typeof unsubscribeDashboard === 'function') unsubscribeDashboard();
+            } else if (viewId === 'view-teacher-dashboard') {
+                updateTeacherDashboard();
+            } else {
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('student-name-display').innerText = currentStudent || 'Guru';
+            }
+        }
+
+        function loginStudent() {
+            const name = document.getElementById('input-student-name').value.trim();
+            if (name.length < 3) {
+                showModal("Masukkan nama minimal 3 huruf ya!");
+                return;
+            }
+            if (!appData.students[name]) {
+                appData.students[name] = { progress: 0, gameScore: 0, quizScore: 0, reflection: '', audioDone: 0, activities: [], status: 'Sedang Belajar' };
+            } else {
+                appData.students[name].status = 'Sedang Belajar';
+            }
+            currentStudent = name;
+            saveDataLocally();
+            navTo('view-student-menu');
+        }
+
+        function loginTeacher() {
+            const pin = document.getElementById('input-teacher-pin').value;
+            if (pin === '1234') { 
+                document.getElementById('input-teacher-pin').value = '';
+                navTo('view-teacher-dashboard');
+            } else {
+                showModal("PIN Salah! Coba lagi.");
+            }
+        }
+
+        function logout() {
+            stopTTS();
+            if (currentStudent && appData.students[currentStudent]) {
+                appData.students[currentStudent].status = 'Keluar Sebelum Selesai';
+                saveDataLocally();
+            }
+            currentStudent = null;
+            navTo('view-home');
+        }
+
+        function saveProgress(activity) {
+            if (!currentStudent) return;
+            if (!appData.students[currentStudent].activities) appData.students[currentStudent].activities = [];
+            
+            if (!appData.students[currentStudent].activities.includes(activity)) {
+                appData.students[currentStudent].activities.push(activity);
+            }
+            let total = 4; 
+            appData.students[currentStudent].progress = Math.min(100, Math.round((appData.students[currentStudent].activities.length / total) * 100));
+            saveDataLocally();
+        }
+
+        function playTTS(text) {
+            stopTTS();
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+                
+                if (currentStudent) {
+                    appData.students[currentStudent].audioDone = (appData.students[currentStudent].audioDone || 0) + 1;
+                    saveDataLocally();
+                }
+            } else {
+                showModal("Maaf, browsermu tidak mendukung fitur suara.");
+            }
+        }
+
+        function stopTTS() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function guessAudio(type) {
+            if(type === 'fiksi') {
+                showModal("Hebat! Tebakanmu tentang fiksi tersimpan. (Poin +10)");
+                if (currentStudent) appData.students[currentStudent].gameScore += 10;
+            } else {
+                showModal("Bagus! Jawaban nonfiksi dicatat. (Poin +10)");
+                if (currentStudent) appData.students[currentStudent].gameScore += 10;
+            }
+            saveDataLocally();
+        }
+
+        function submitReflection(feel) {
+            if (currentStudent) {
+                appData.students[currentStudent].reflection = feel;
+                appData.students[currentStudent].status = 'Selesai Belajar';
+                saveProgress('reflection');
+            }
+            const thanksEl = document.getElementById('reflection-thanks');
+            if (thanksEl) {
+                thanksEl.classList.remove('hidden');
+                setTimeout(() => thanksEl.classList.add('hidden'), 3000);
+            }
+        }
+
+        const quizQuestions = [
+            { q: "Teks yang isinya rekaan atau khayalan disebut teks...", options: ["Fiksi", "Nonfiksi", "Berita"], answer: 0 },
+            { q: "Buku biografi pahlawan termasuk jenis teks...", options: ["Fiksi", "Nonfiksi", "Mitos"], answer: 1 },
+            { q: "Mana di bawah ini yang merupakan ciri teks fiksi?", options: ["Sesuai fakta", "Berdasarkan sejarah", "Hasil imajinasi pengarang"], answer: 2 }
+        ];
+        let currentQuizIndex = 0;
+        let currentQuizScore = 0;
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            currentQuizScore = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            navTo('view-quiz');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            if (currentQuizIndex >= quizQuestions.length) {
+                finishQuiz();
+                return;
+            }
+            const qData = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-question').innerText = `${currentQuizIndex + 1}. ${qData.q}`;
+            
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-lg border-2 border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition font-medium";
+                btn.innerText = opt;
+                btn.onclick = () => handleQuizAnswer(idx, qData.answer);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(selected, correct) {
+            if (selected === correct) currentQuizScore += 33.3; // Approx 100/3
+            currentQuizIndex++;
+            loadQuizQuestion();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+            
+            let finalScore = Math.round(currentQuizScore);
+            document.getElementById('quiz-score-display').innerText = finalScore;
+            
+            if (currentStudent) {
+                appData.students[currentStudent].quizScore = finalScore;
+                saveDataLocally();
+            }
+        }
+
+        function updateTeacherDashboard() {
+            if (window.cloudAuth && window.cloudAuth.currentUser) {
+                const colRef = window.collection(window.cloudDb, 'artifacts', window.cloudAppId, 'public', 'data', 'students');
+                
+                if (unsubscribeDashboard) unsubscribeDashboard();
+                
+                unsubscribeDashboard = window.onSnapshot(colRef, (snapshot) => {
+                    let cloudData = {};
+                    snapshot.forEach(doc => { cloudData[doc.id] = doc.data(); });
+                    appData.students = cloudData;
+                    renderTable();
+                }, (error) => {
+                    console.error("Gagal Live Data", error);
+                    loadData();
+                    renderTable();
+                });
+            } else {
+                loadData();
+                renderTable(); 
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('student-table-body');
+            tbody.innerHTML = '';
+            
+            let total = 0, quizScoreTotal = 0, withQuiz = 0, audioDone = 0, quizDone = 0;
+
+            for (const [name, data] of Object.entries(appData.students)) {
+                total++;
+                audioDone += data.audioDone || 0;
+                
+                if (data.activities && data.activities.includes('quiz')) {
+                    quizDone++;
+                    quizScoreTotal += data.quizScore || 0;
+                    withQuiz++;
+                }
+
+                let stat = data.status || 'Belum Mulai';
+                let cClass = "text-gray-500";
+                if (stat === 'Sedang Belajar') cClass = 'text-blue-600 font-bold animate-pulse';
+                else if (stat === 'Selesai Belajar') cClass = 'text-green-600 font-bold';
+                else if (stat.includes('Keluar')) cClass = 'text-red-500 font-bold';
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-200 hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold">${name}</td>
+                    <td class="p-3"><div class="w-full bg-gray-200 rounded-full h-2 mt-1"><div class="bg-blue-500 h-2 rounded-full" style="width: ${data.progress || 0}%"></div></div></td>
+                    <td class="p-3 font-semibold text-pink-600">${data.gameScore || 0}</td>
+                    <td class="p-3 font-semibold text-purple-600">${data.quizScore || 0}</td>
+                    <td class="p-3 text-sm">${data.reflection || '-'}</td>
+                    <td class="p-3 text-sm ${cClass}">${stat}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            document.getElementById('dash-total-students').innerText = total;
+            document.getElementById('dash-avg-score').innerText = withQuiz > 0 ? Math.round(quizScoreTotal / withQuiz) : 0;
+            document.getElementById('dash-audio-done').innerText = audioDone;
+            document.getElementById('dash-quiz-done').innerText = quizDone;
+        }
+
+        function exportToCSV() {
+            let csv = "data:text/csv;charset=utf-8,Nama,Progress,SkorAudio,SkorKuis,Refleksi,Status\n";
+            for (const [name, data] of Object.entries(appData.students)) {
+                csv += `"${name}",${data.progress || 0},${data.gameScore || 0},${data.quizScore || 0},"${data.reflection || '-'}",${data.status || '-'}\n`;
+            }
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csv));
+            link.setAttribute("download", "Laporan_Kelas5.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetData() {
+            showModal("⚠️ Yakin ingin menghapus SEMUA data?", "confirm", async (result) => {
+                if (result) {
+                    if (window.cloudAuth && window.cloudAuth.currentUser) {
+                        for (const name of Object.keys(appData.students)) {
+                            try {
+                                const docRef = window.doc(window.cloudDb, 'artifacts', window.cloudAppId, 'public', 'data', 'students', name);
+                                await window.deleteDoc(docRef);
+                            } catch (e) {}
+                        }
+                    }
+                    appData = { students: {} };
+                    saveDataLocally();
+                    updateTeacherDashboard();
+                    showModal("Data berhasil direset.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
